@@ -1,0 +1,66 @@
+{
+  "name": "react-quick-response",
+  "version": "0.0.0",
+  "description": "A lightweight React component for generating customizable QR codes as SVG elements with support for embedded content overlays.",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rfoel/react-quick-response.git"
+  },
+  "main": "./dist/react-quick-response.umd.cjs",
+  "module": "./dist/react-quick-response.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/react-quick-response.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/react-quick-response.umd.cjs"
+      }
+    }
+  },
+  "keywords": [
+    "qr-code",
+    "qrcode",
+    "react",
+    "generator",
+    "svg",
+    "png",
+    "no-dependencies"
+  ],
+  "author": "Rafael Franco",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.1",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/node": "^22.16.3",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "eslint": "^9.30.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "semantic-release": "^24.2.7",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.35.1",
+    "vite": "^7.0.4",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}

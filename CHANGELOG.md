@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/rfoel/react-quick-response/compare/v1.0.3...v1.0.4) (2025-07-17)
+
+
+### Bug Fixes
+
+* use static size for SSR ([b143533](https://github.com/rfoel/react-quick-response/commit/b143533c8d2883d93566400d34f4e45fb0074457))
+
 ## [1.0.3](https://github.com/rfoel/react-quick-response/compare/v1.0.2...v1.0.3) (2025-07-17)
 
 

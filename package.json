@@ -1,6 +1,6 @@
 {
   "name": "react-quick-response",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A lightweight React component for generating customizable QR codes as SVG elements with support for embedded content overlays.",
   "type": "module",
   "files": [

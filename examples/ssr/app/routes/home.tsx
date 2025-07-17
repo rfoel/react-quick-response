@@ -1,9 +1,18 @@
-import { useRef } from "react";
-import { ReactQR } from "../../src/ReactQR";
-import ReactLogo from "./assets/react.svg?react";
-import ViteLogo from "./assets/vite.png?inline";
+import type { Route } from "./+types/home";
 
-const App = () => {
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "New React Router App" },
+    { name: "description", content: "Welcome to React Router!" },
+  ];
+}
+
+import { useRef } from "react";
+import { ReactQR } from "../../../../src/ReactQR";
+import ReactLogo from "../assets/react.svg?react";
+import ViteLogo from "../assets/vite.png?inline";
+
+export default function Home() {
   const qrRef = useRef<SVGSVGElement>(null);
 
   return (
@@ -19,6 +28,4 @@ const App = () => {
       </ReactQR>
     </div>
   );
-};
-
-export default App;
+}

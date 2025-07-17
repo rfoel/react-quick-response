@@ -126,6 +126,9 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
             ref={childrenSvgRef}
             x={mask.fx}
             y={mask.fy}
+            width={w || 1}
+            height={h || 1}
+            viewBox={`0 0 ${w} ${h}`}
             pointerEvents="none"
           >
             {children}

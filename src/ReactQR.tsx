@@ -1,6 +1,6 @@
-import {
+import React, {
   forwardRef,
-  useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -20,6 +20,47 @@ const ERROR_CORRECTION_LEVEL_MAP: Record<
   H: qrcodegen.QrCode.Ecc.HIGH,
 } as const;
 
+type SizedSvgProps = {
+  width?: number | string;
+  height?: number | string;
+  viewBox?: string;
+};
+
+function isSizedElement(
+  node: React.ReactNode
+): node is React.ReactElement<SizedSvgProps> {
+  return React.isValidElement(node);
+}
+
+function parseNumber(val: unknown): number | null {
+  if (typeof val === "number") return val;
+  if (typeof val === "string") {
+    const n = parseFloat(val);
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
+}
+
+function getIntrinsicSize(
+  node: React.ReactNode
+): { w: number; h: number } | null {
+  if (!isSizedElement(node)) return null;
+
+  const wAttr = parseNumber(node.props.width);
+  const hAttr = parseNumber(node.props.height);
+  if (wAttr && hAttr) return { w: wAttr, h: hAttr };
+
+  const vb = node.props.viewBox;
+  if (typeof vb === "string") {
+    const nums = vb.trim().split(/\s+/).map(parseFloat);
+    if (nums.length === 4 && nums.every(Number.isFinite)) {
+      const [, , w, h] = nums;
+      return { w, h };
+    }
+  }
+  return null;
+}
+
 export interface ReactQRProps extends PropsWithChildren {
   value: string;
   size?: number;
@@ -36,8 +77,8 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
       size = 128,
       errorCorrectionLevel = "L",
       margin = 4,
-      foregroundColor = "#000000",
-      backgroundColor = "#ffffff",
+      foregroundColor = "#000",
+      backgroundColor = "#fff",
       children,
     },
     ref
@@ -57,20 +98,28 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
     }, [value, errorCorrectionLevel]);
 
     const qrSize = qr?.size ?? 0;
-    const cellSize = qrSize > 0 ? (size - margin * 2) / qrSize : 0;
+    const cellSize = qrSize ? (size - margin * 2) / qrSize : 0;
 
-    const [{ w, h }, setOverlay] = useState({ w: 0, h: 0 });
+    const staticSize = useMemo(() => getIntrinsicSize(children), [children]);
 
-    useEffect(() => {
-      if (children && childrenSvgRef.current) {
-        const { width, height } = childrenSvgRef.current.getBBox();
-        setOverlay({ w: width, h: height });
-      }
-    }, [children]);
+    const [{ w, h }, setOverlay] = useState(staticSize ?? { w: 0, h: 0 });
+
+    useLayoutEffect(() => {
+      if (!children || staticSize || !childrenSvgRef.current) return;
+      const { width, height } = childrenSvgRef.current.getBBox();
+      setOverlay({ w: width, h: height });
+    }, [children, staticSize]);
 
     const mask = useMemo(() => {
-      if (!children || !cellSize) {
-        return { sx: -1, sy: -1, ex: -1, ey: -1, fx: 0, fy: 0 };
+      if (!children || !cellSize || !w || !h) {
+        return {
+          sx: -1,
+          sy: -1,
+          ex: -1,
+          ey: -1,
+          fx: margin,
+          fy: margin,
+        };
       }
 
       const startXf = (qrSize - w / cellSize) / 2;
@@ -116,24 +165,24 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
         height={size}
         viewBox={`0 0 ${size} ${size}`}
         xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
         preserveAspectRatio="xMidYMid meet"
       >
         <path d={`M0,0h${size}v${size}h-${size}z`} fill={backgroundColor} />
         <path d={qrPath} fill={foregroundColor} shapeRendering="crispEdges" />
-        {children ? (
+        {children && (
           <svg
             ref={childrenSvgRef}
             x={mask.fx}
             y={mask.fy}
             width={w || 1}
             height={h || 1}
+            style={{ width: w || 1, height: h || 1 }}
             viewBox={`0 0 ${w} ${h}`}
             pointerEvents="none"
           >
             {children}
           </svg>
-        ) : null}
+        )}
       </svg>
     );
   }

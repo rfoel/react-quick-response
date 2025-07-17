@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/rfoel/react-quick-response/compare/v1.0.0...v1.0.1) (2025-07-17)
+
+
+### Bug Fixes
+
+* align overlay precisely and mask QR modules correctly ([5ab6511](https://github.com/rfoel/react-quick-response/commit/5ab65112933de795a85a4c1a5c8e1a5d9d39fce7))
+
 # 1.0.0 (2025-07-16)
 
 

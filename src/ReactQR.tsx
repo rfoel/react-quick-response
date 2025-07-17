@@ -1,6 +1,6 @@
 import {
   forwardRef,
-  useLayoutEffect,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -61,7 +61,7 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
 
     const [{ w, h }, setOverlay] = useState({ w: 0, h: 0 });
 
-    useLayoutEffect(() => {
+    useEffect(() => {
       if (children && childrenSvgRef.current) {
         const { width, height } = childrenSvgRef.current.getBBox();
         setOverlay({ w: width, h: height });

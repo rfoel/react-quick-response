@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/rfoel/react-quick-response/compare/v1.0.2...v1.0.3) (2025-07-17)
+
+
+### Bug Fixes
+
+* lock the overlay SVG width and height ([d370cc7](https://github.com/rfoel/react-quick-response/commit/d370cc7de7009a2587db9c8b4cfc3110bc5fd05d))
+
 ## [1.0.2](https://github.com/rfoel/react-quick-response/compare/v1.0.1...v1.0.2) (2025-07-17)
 
 

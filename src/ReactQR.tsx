@@ -59,52 +59,53 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
     const qrSize = qr?.size ?? 0;
     const cellSize = qrSize > 0 ? (size - margin * 2) / qrSize : 0;
 
-    const [{ modulesW, modulesH }, setOverlayModules] = useState({
-      modulesW: 0,
-      modulesH: 0,
-    });
+    const [{ w, h }, setOverlay] = useState({ w: 0, h: 0 });
 
     useLayoutEffect(() => {
-      if (!children || !childrenSvgRef.current || !cellSize) return;
-
-      const bBox = childrenSvgRef.current.getBBox();
-      setOverlayModules({
-        modulesW: Math.ceil((bBox.width + 1) / cellSize),
-        modulesH: Math.ceil((bBox.height + 1) / cellSize),
-      });
-    }, [cellSize, children]);
-
-    const { startX, startY, endX, endY } = useMemo(() => {
-      if (children) {
-        const sx = Math.floor((qrSize - modulesW) / 2);
-        const sy = Math.floor((qrSize - modulesH) / 2);
-        return {
-          startX: sx,
-          startY: sy,
-          endX: sx + modulesW,
-          endY: sy + modulesH,
-        };
+      if (children && childrenSvgRef.current) {
+        const { width, height } = childrenSvgRef.current.getBBox();
+        setOverlay({ w: width, h: height });
       }
-      return { startX: -1, startY: -1, endX: -1, endY: -1 };
-    }, [children, qrSize, modulesW, modulesH]);
+    }, [children]);
+
+    const mask = useMemo(() => {
+      if (!children || !cellSize) {
+        return { sx: -1, sy: -1, ex: -1, ey: -1, fx: 0, fy: 0 };
+      }
+
+      const startXf = (qrSize - w / cellSize) / 2;
+      const startYf = (qrSize - h / cellSize) / 2;
+      const endXf = startXf + w / cellSize;
+      const endYf = startYf + h / cellSize;
+
+      return {
+        sx: Math.floor(startXf),
+        sy: Math.floor(startYf),
+        ex: Math.ceil(endXf),
+        ey: Math.ceil(endYf),
+        fx: margin + startXf * cellSize,
+        fy: margin + startYf * cellSize,
+      };
+    }, [children, w, h, cellSize, qrSize, margin]);
 
     const qrPath = useMemo(() => {
       if (!qr) return "";
-
+      const { sx, sy, ex, ey } = mask;
       const modules = qr.getModules();
       let path = "";
-      for (let y = 0; y < qrSize; y += 1) {
-        for (let x = 0; x < qrSize; x += 1) {
-          const skip = x >= startX && x < endX && y >= startY && y < endY;
+
+      for (let y = 0; y < qrSize; y++) {
+        for (let x = 0; x < qrSize; x++) {
+          const skip = x >= sx && x < ex && y >= sy && y < ey;
           if (!skip && modules[y][x]) {
-            const rectX = margin + x * cellSize;
-            const rectY = margin + y * cellSize;
-            path += `M${rectX},${rectY}h${cellSize}v${cellSize}h-${cellSize}z`;
+            const px = margin + x * cellSize;
+            const py = margin + y * cellSize;
+            path += `M${px},${py}h${cellSize}v${cellSize}h-${cellSize}z`;
           }
         }
       }
       return path;
-    }, [qr, qrSize, startX, endX, startY, endY, margin, cellSize]);
+    }, [qr, qrSize, mask, margin, cellSize]);
 
     if (!qr) return null;
 
@@ -123,8 +124,9 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
         {children ? (
           <svg
             ref={childrenSvgRef}
-            x={margin + startX * cellSize}
-            y={margin + startY * cellSize}
+            x={mask.fx}
+            y={mask.fy}
+            pointerEvents="none"
           >
             {children}
           </svg>

@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/rfoel/react-quick-response/compare/v1.0.4...v1.0.5) (2025-07-17)
+
+
+### Bug Fixes
+
+* use useEffect instead ([7f034da](https://github.com/rfoel/react-quick-response/commit/7f034dab6c6e14abf01b845c9914cb68cbb3281c))
+
 ## [1.0.4](https://github.com/rfoel/react-quick-response/compare/v1.0.3...v1.0.4) (2025-07-17)
 
 

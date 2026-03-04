@@ -22,10 +22,11 @@ export default defineConfig({
       fileName: "react-quick-response",
     },
     rollupOptions: {
-      external: ["react"],
+      external: ["react", "react/jsx-runtime"],
       output: {
         globals: {
           react: "React",
+          "react/jsx-runtime": "ReactJsxRuntime",
         },
       },
     },

@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/rfoel/react-quick-response/compare/v1.0.5...v1.0.6) (2026-03-04)
+
+
+### Bug Fixes
+
+* fix ssr ([5fdd781](https://github.com/rfoel/react-quick-response/commit/5fdd78160618b095562342223706ba8fdba924ef))
+
 ## [1.0.5](https://github.com/rfoel/react-quick-response/compare/v1.0.4...v1.0.5) (2025-07-17)
 
 

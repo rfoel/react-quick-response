@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/rfoel/react-quick-response/compare/v1.0.6...v1.0.7) (2026-06-05)
+
+
+### Bug Fixes
+
+* **ci:** install root deps so the example can resolve react ([2dd7804](https://github.com/rfoel/react-quick-response/commit/2dd78043f33e07ebb08423f23d223615e79bb202))
+
 ## [1.0.6](https://github.com/rfoel/react-quick-response/compare/v1.0.5...v1.0.6) (2026-03-04)
 
 

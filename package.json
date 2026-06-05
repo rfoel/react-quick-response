@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/rfoel/react-quick-response.git"
   },
+  "homepage": "https://react-quick-response.rfoel.dev",
   "main": "./dist/react-quick-response.umd.cjs",
   "module": "./dist/react-quick-response.js",
   "types": "./dist/index.d.ts",

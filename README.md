@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/react-quick-response.svg)](https://www.npmjs.com/package/react-quick-response)
 [![npm downloads](https://img.shields.io/npm/dm/react-quick-response.svg)](https://www.npmjs.com/package/react-quick-response)
 [![minzipped size](https://img.shields.io/bundlephobia/minzip/react-quick-response.svg)](https://bundlephobia.com/package/react-quick-response)
-[![license](https://img.shields.io/npm/l/react-quick-response.svg)](#license)
+[![license](https://img.shields.io/npm/l/react-quick-response.svg)](./LICENSE)
 
 A lightweight React component for generating customizable QR codes as SVG elements with support for embedded content overlays.
 

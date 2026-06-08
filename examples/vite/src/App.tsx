@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { ReactQR } from "../../../src/ReactQR";
 import ReactLogo from "./assets/react.svg?react";
+import QrcodeIcon from "./QrcodeIcon";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 
@@ -26,6 +27,7 @@ const App = () => {
   const [foregroundColor, setForegroundColor] = useState("#0f172a");
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
   const [showLogo, setShowLogo] = useState(true);
+  const [logoSize, setLogoSize] = useState(0.3);
 
   const downloadSvg = () => {
     if (!qrRef.current) return;
@@ -57,8 +59,11 @@ const App = () => {
     <div className="min-h-screen bg-slate-950 bg-[radial-gradient(900px_500px_at_15%_-10%,rgba(79,140,255,0.18),transparent),radial-gradient(700px_500px_at_100%_0%,rgba(110,168,254,0.12),transparent)] text-slate-100">
       <div className="mx-auto max-w-5xl px-6 pt-16 pb-12">
         <header>
-          <h1 className="bg-gradient-to-r from-white to-sky-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent">
-            react-quick-response
+          <h1 className="flex items-center gap-3 text-4xl font-bold tracking-tight">
+            <QrcodeIcon className="h-9 w-9 shrink-0 text-sky-400" />
+            <span className="bg-gradient-to-r from-white to-sky-400 bg-clip-text text-transparent">
+              react-quick-response
+            </span>
           </h1>
           <p className="mt-3 max-w-prose leading-relaxed text-slate-400">
             A lightweight React component for generating customizable QR codes
@@ -86,7 +91,7 @@ const App = () => {
 
         <main className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
           <section
-            className="grid min-h-80 place-items-center rounded-2xl border border-slate-700 p-8 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.7)] transition-colors"
+            className="grid min-h-80 place-items-center overflow-hidden rounded-2xl border border-slate-700 p-8 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.7)] transition-colors [&_svg]:h-auto [&_svg]:max-w-full"
             style={{ background: backgroundColor }}
           >
             <ReactQR
@@ -97,10 +102,9 @@ const App = () => {
               errorCorrectionLevel={errorCorrectionLevel}
               foregroundColor={foregroundColor}
               backgroundColor={backgroundColor}
+              logoSize={logoSize}
             >
-              {showLogo ? (
-                <ReactLogo width={size * 0.22} height={size * 0.22} />
-              ) : undefined}
+              {showLogo ? <ReactLogo /> : undefined}
             </ReactQR>
           </section>
 
@@ -196,6 +200,26 @@ const App = () => {
               />
               <span>Embed logo overlay</span>
             </label>
+
+            {showLogo && (
+              <label className={fieldLabel}>
+                <span>
+                  Logo size{" "}
+                  <em className="font-normal text-slate-100 not-italic">
+                    {Math.round(logoSize * 100)}%
+                  </em>
+                </span>
+                <input
+                  className="accent-sky-500"
+                  type="range"
+                  min={0.1}
+                  max={0.5}
+                  step={0.01}
+                  value={logoSize}
+                  onChange={(e) => setLogoSize(Number(e.target.value))}
+                />
+              </label>
+            )}
 
             <div className="flex gap-3.5">
               <button

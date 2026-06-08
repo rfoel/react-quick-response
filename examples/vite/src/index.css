@@ -6,6 +6,11 @@
     sans-serif;
 }
 
+html,
+body {
+  background-color: var(--color-slate-900);
+}
+
 html {
   color-scheme: dark;
 }

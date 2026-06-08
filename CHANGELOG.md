@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/rfoel/react-quick-response/compare/v1.1.0...v1.2.0) (2026-06-08)
+
+
+### Features
+
+* **lib:** add module shape option (square, dots, rounded) ([8e36f63](https://github.com/rfoel/react-quick-response/commit/8e36f6344a7a02507ef8726a841077f668492ff1))
+
 # [1.1.0](https://github.com/rfoel/react-quick-response/compare/v1.0.7...v1.1.0) (2026-06-08)
 
 

@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/rfoel/react-quick-response/compare/v1.0.7...v1.1.0) (2026-06-08)
+
+
+### Features
+
+* **lib:** auto-size and center logo overlay ([c090ac9](https://github.com/rfoel/react-quick-response/commit/c090ac99bcc32817cb8e1acb04ba4b4ec16e4b92))
+
 ## [1.0.7](https://github.com/rfoel/react-quick-response/compare/v1.0.6...v1.0.7) (2026-06-05)
 
 

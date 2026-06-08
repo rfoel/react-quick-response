@@ -5,9 +5,30 @@
 [![minzipped size](https://img.shields.io/bundlephobia/minzip/react-quick-response.svg)](https://bundlephobia.com/package/react-quick-response)
 [![license](https://img.shields.io/npm/l/react-quick-response.svg)](./LICENSE)
 
-A lightweight React component for generating customizable QR codes as SVG elements with support for embedded content overlays.
+**A lightweight React QR code component** — generate customizable QR codes as crisp SVG, with a centered logo overlay, dot/rounded module shapes, and **zero dependencies**.
+
+Looking for a **React QR code generator with a logo**, **rounded QR codes**, or a **QR code as an SVG component**? That's what this is.
 
 **[Live demo →](https://react-quick-response.rfoel.dev)**
+
+## Features
+
+- 🪶 **Zero dependencies** — tiny footprint, bundled QR encoder
+- 🖼️ **SVG output** — sharp at any size, exportable to SVG/PNG
+- 🎯 **Logo overlay** — drop any SVG/image as a child; it's auto-sized to the largest scannable area and centered, with the modules behind it knocked out
+- 🔵 **Module shapes** — `square`, `dots`, or `rounded` (smooth blobs)
+- 🎨 **Custom colors**, margin, and error-correction level
+- ⚛️ **SSR-friendly** & fully typed (TypeScript)
+
+## How it compares
+
+| | `react-quick-response` | `qrcode.react` | `react-qr-code` | `react-qrcode-logo` |
+| --- | :---: | :---: | :---: | :---: |
+| Dependencies | **none** | `qrcode` | `qrcode-generator` | `qrcode-generator` |
+| SVG output | ✅ | ✅ (or canvas) | ✅ | ❌ (canvas) |
+| Logo overlay | ✅ auto-sized & centered | ⚠️ manual | ❌ | ✅ |
+| Dot / rounded modules | ✅ | ❌ | ❌ | ✅ |
+| TypeScript types | ✅ built-in | ✅ | ✅ | ✅ |
 
 ## Installation
 
@@ -31,7 +52,7 @@ function App() {
 
 ## Advanced Usage
 
-### Custom Styling
+### Custom styling
 
 ```tsx
 <ReactQR
@@ -44,22 +65,28 @@ function App() {
 />
 ```
 
-### With Logo Overlay
+### Module shapes
 
 ```tsx
-<ReactQR value="https://example.com">
-  <circle cx="24" cy="24" r="20" fill="#007bff" />
-  <text x="24" y="28" textAnchor="middle" fill="white" fontSize="12">
-    LOGO
-  </text>
-</ReactQR>
+<ReactQR value="https://example.com" shape="dots" />
+<ReactQR value="https://example.com" shape="rounded" />
 ```
+
+`rounded` rounds a module's corner only where it has no neighbour, so
+connected runs stay straight where they touch — giving smooth, blob-like
+modules. `dots` renders every module as a circle.
+
+### QR code with a logo
+
+Pass any SVG (or `<image>`) as a child. It's scaled to the largest size
+that stays scannable for the chosen error-correction level and centered,
+and the QR modules behind it are knocked out automatically.
 
 ```tsx
 import ReactLogo from "./assets/react.svg?react";
 
 <ReactQR value="https://react.dev" errorCorrectionLevel="M">
-  <ReactLogo width={32} height={32} />
+  <ReactLogo />
 </ReactQR>;
 ```
 
@@ -71,28 +98,34 @@ import ViteLogo from "./assets/vite.png?inline";
 </ReactQR>;
 ```
 
+Tip: bump `errorCorrectionLevel` to `"H"` for the biggest logo, or set
+`logoSize` to control the fraction of the QR it covers.
+
 ## API Reference
 
 ### Props
 
-| Prop                   | Type                       | Default      | Description                                                  |
-| ---------------------- | -------------------------- | ------------ | ------------------------------------------------------------ |
-| `value`                | `string`                   | **Required** | The text or URL to encode in the QR code                     |
-| `size`                 | `number`                   | `128`        | Width and height of the QR code in pixels                    |
-| `errorCorrectionLevel` | `"L" \| "M" \| "Q" \| "H"` | `"L"`        | Error correction level (L=Low, M=Medium, Q=Quartile, H=High) |
-| `margin`               | `number`                   | `4`          | Margin around the QR code in pixels                          |
-| `foregroundColor`      | `string`                   | `"#000000"`  | Color of the QR code modules                                 |
-| `backgroundColor`      | `string`                   | `"#ffffff"`  | Background color of the QR code                              |
-| `children`             | `React.ReactNode`          | `undefined`  | SVG content to overlay in the center                         |
+| Prop                   | Type                                | Default                | Description                                                          |
+| ---------------------- | ----------------------------------- | ---------------------- | -------------------------------------------------------------------- |
+| `value`                | `string`                            | **Required**           | The text or URL to encode in the QR code                             |
+| `size`                 | `number`                            | `128`                  | Width and height of the QR code in pixels                            |
+| `errorCorrectionLevel` | `"L" \| "M" \| "Q" \| "H"`          | `"L"`                  | Error-correction level (L=Low, M=Medium, Q=Quartile, H=High)         |
+| `margin`               | `number`                            | `4`                    | Quiet-zone padding around the QR code, in pixels                     |
+| `foregroundColor`      | `string`                            | `"#000"`               | Color of the QR code modules                                         |
+| `backgroundColor`      | `string`                            | `"#fff"`               | Background color of the QR code                                      |
+| `shape`                | `"square" \| "dots" \| "rounded"`   | `"square"`             | Shape of the modules                                                 |
+| `logoSize`             | `number`                            | _largest scannable_    | Logo overlay size as a fraction of the QR size (0–1)                 |
+| `children`             | `React.ReactNode`                   | `undefined`            | SVG content to overlay in the center (the logo)                      |
 
-### Error Correction Levels
+### Error correction levels
 
 - **L (Low)**: ~7% error correction
 - **M (Medium)**: ~15% error correction
 - **Q (Quartile)**: ~25% error correction
 - **H (High)**: ~30% error correction
 
-Higher error correction levels allow for more content overlay but result in denser QR codes.
+Higher error-correction levels allow for a larger logo overlay but result
+in denser QR codes.
 
 ## Requirements
 

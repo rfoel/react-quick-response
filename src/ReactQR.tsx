@@ -10,6 +10,46 @@ import qrcodegen from "./qrcodegen";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 
+/**
+ * Module shape: "square" (classic), "dots" (each module a circle), or
+ * "rounded" (blobs — corners are rounded only where a module has no
+ * neighbour, so connected runs stay straight where they touch).
+ */
+export type QRShape = "square" | "dots" | "rounded";
+
+// Round to 3 decimals to keep generated path strings compact.
+const r3 = (n: number): number => Math.round(n * 1000) / 1000;
+
+function dotPath(px: number, py: number, s: number): string {
+  const rad = s / 2;
+  const cy = py + rad;
+  return `M${r3(px)},${r3(cy)}a${r3(rad)},${r3(rad)} 0 1 0 ${r3(
+    s
+  )},0a${r3(rad)},${r3(rad)} 0 1 0 ${r3(-s)},0Z`;
+}
+
+type Corners = { tl: boolean; tr: boolean; br: boolean; bl: boolean };
+
+function roundedPath(px: number, py: number, s: number, c: Corners): string {
+  const rad = s / 2;
+  const x0 = px;
+  const y0 = py;
+  const x1 = px + s;
+  const y1 = py + s;
+  const arc = `A${r3(rad)},${r3(rad)} 0 0 1 `;
+
+  let d = `M${r3(x0 + (c.tl ? rad : 0))},${r3(y0)}`;
+  d += `H${r3(x1 - (c.tr ? rad : 0))}`;
+  if (c.tr) d += `${arc}${r3(x1)},${r3(y0 + rad)}`;
+  d += `V${r3(y1 - (c.br ? rad : 0))}`;
+  if (c.br) d += `${arc}${r3(x1 - rad)},${r3(y1)}`;
+  d += `H${r3(x0 + (c.bl ? rad : 0))}`;
+  if (c.bl) d += `${arc}${r3(x0)},${r3(y1 - rad)}`;
+  d += `V${r3(y0 + (c.tl ? rad : 0))}`;
+  if (c.tl) d += `${arc}${r3(x0 + rad)},${r3(y0)}`;
+  return d + "Z";
+}
+
 const ERROR_CORRECTION_LEVEL_MAP: Record<
   ErrorCorrectionLevel,
   qrcodegen.QrCode.Ecc
@@ -91,6 +131,8 @@ export interface ReactQRProps extends PropsWithChildren {
    * largest scannable size for the current error-correction level.
    */
   logoSize?: number;
+  /** Module shape: "square", "dots", or "rounded". Default "square". */
+  shape?: QRShape;
 }
 
 export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
@@ -103,6 +145,7 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
       foregroundColor = "#000",
       backgroundColor = "#fff",
       logoSize = LOGO_SAFE_RATIO[errorCorrectionLevel],
+      shape = "square",
       children,
     },
     ref
@@ -173,20 +216,43 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
       if (!qr) return "";
       const { sx, sy, ex, ey } = mask;
       const modules = qr.getModules();
-      let path = "";
 
+      // A module is drawn when it's dark and not knocked out by the logo.
+      const filled = (x: number, y: number) =>
+        x >= 0 &&
+        y >= 0 &&
+        x < qrSize &&
+        y < qrSize &&
+        modules[y][x] &&
+        !(x >= sx && x < ex && y >= sy && y < ey);
+
+      let path = "";
       for (let y = 0; y < qrSize; y++) {
         for (let x = 0; x < qrSize; x++) {
-          const skip = x >= sx && x < ex && y >= sy && y < ey;
-          if (!skip && modules[y][x]) {
-            const px = margin + x * cellSize;
-            const py = margin + y * cellSize;
+          if (!filled(x, y)) continue;
+          const px = margin + x * cellSize;
+          const py = margin + y * cellSize;
+
+          if (shape === "dots") {
+            path += dotPath(px, py, cellSize);
+          } else if (shape === "rounded") {
+            const up = filled(x, y - 1);
+            const down = filled(x, y + 1);
+            const left = filled(x - 1, y);
+            const right = filled(x + 1, y);
+            path += roundedPath(px, py, cellSize, {
+              tl: !up && !left,
+              tr: !up && !right,
+              br: !down && !right,
+              bl: !down && !left,
+            });
+          } else {
             path += `M${px},${py}h${cellSize}v${cellSize}h-${cellSize}z`;
           }
         }
       }
       return path;
-    }, [qr, qrSize, mask, margin, cellSize]);
+    }, [qr, qrSize, mask, margin, cellSize, shape]);
 
     if (!qr) return null;
 
@@ -200,7 +266,11 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
         preserveAspectRatio="xMidYMid meet"
       >
         <path d={`M0,0h${size}v${size}h-${size}z`} fill={backgroundColor} />
-        <path d={qrPath} fill={foregroundColor} shapeRendering="crispEdges" />
+        <path
+          d={qrPath}
+          fill={foregroundColor}
+          shapeRendering={shape === "square" ? "crispEdges" : "geometricPrecision"}
+        />
         {children && (
           <svg
             ref={childrenSvgRef}

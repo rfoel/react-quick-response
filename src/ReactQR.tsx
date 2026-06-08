@@ -20,6 +20,15 @@ const ERROR_CORRECTION_LEVEL_MAP: Record<
   H: qrcodegen.QrCode.Ecc.HIGH,
 } as const;
 
+// Largest logo (linear fraction of QR size) that stays scannable per ECC
+// level, kept a little under the theoretical recovery limit for safety margin.
+const LOGO_SAFE_RATIO: Record<ErrorCorrectionLevel, number> = {
+  L: 0.2,
+  M: 0.3,
+  Q: 0.38,
+  H: 0.45,
+};
+
 type SizedSvgProps = {
   width?: number | string;
   height?: number | string;
@@ -62,12 +71,26 @@ function getIntrinsicSize(
 }
 
 export interface ReactQRProps extends PropsWithChildren {
+  /** Text or URL to encode in the QR code. */
   value: string;
+  /** Width and height of the square SVG in pixels. Default 128. */
   size?: number;
+  /**
+   * Error-correction level. Higher levels survive more damage (and allow a
+   * bigger logo) at the cost of denser codes. Default "L".
+   */
   errorCorrectionLevel?: ErrorCorrectionLevel;
+  /** Quiet-zone padding around the QR, in pixels. Default 4. */
   margin?: number;
+  /** Color of the QR modules (foreground). Default "#000". */
   foregroundColor?: string;
+  /** Color behind the QR (background). Default "#fff". */
   backgroundColor?: string;
+  /**
+   * Logo overlay size as a fraction of the QR size (0–1). Defaults to the
+   * largest scannable size for the current error-correction level.
+   */
+  logoSize?: number;
 }
 
 export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
@@ -79,6 +102,7 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
       margin = 4,
       foregroundColor = "#000",
       backgroundColor = "#fff",
+      logoSize = LOGO_SAFE_RATIO[errorCorrectionLevel],
       children,
     },
     ref
@@ -102,13 +126,21 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
 
     const staticSize = useMemo(() => getIntrinsicSize(children), [children]);
 
-    const [{ w, h }, setOverlay] = useState(staticSize ?? { w: 0, h: 0 });
+    const [intrinsic, setIntrinsic] = useState(staticSize ?? { w: 0, h: 0 });
 
     useEffect(() => {
       if (!children || staticSize || !childrenSvgRef.current) return;
       const { width, height } = childrenSvgRef.current.getBBox();
-      setOverlay({ w: width, h: height });
+      setIntrinsic({ w: width, h: height });
     }, [children, staticSize]);
+
+    // Scale logo to a fraction of the QR size, preserving its aspect ratio.
+    const { w, h } = useMemo(() => {
+      if (!intrinsic.w || !intrinsic.h) return { w: 0, h: 0 };
+      const box = size * logoSize;
+      const scale = box / Math.max(intrinsic.w, intrinsic.h);
+      return { w: intrinsic.w * scale, h: intrinsic.h * scale };
+    }, [intrinsic, size, logoSize]);
 
     const mask = useMemo(() => {
       if (!children || !cellSize || !w || !h) {
@@ -177,7 +209,7 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
             width={w || 1}
             height={h || 1}
             style={{ width: w || 1, height: h || 1 }}
-            viewBox={`0 0 ${w} ${h}`}
+            viewBox={`0 0 ${intrinsic.w || 1} ${intrinsic.h || 1}`}
             pointerEvents="none"
           >
             {children}

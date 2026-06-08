@@ -4,6 +4,13 @@ import ReactLogo from "./assets/react.svg?react";
 import QrcodeIcon from "./QrcodeIcon";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
+type QRShape = "square" | "dots" | "rounded";
+
+const SHAPE_OPTIONS: { value: QRShape; label: string }[] = [
+  { value: "square", label: "Square" },
+  { value: "dots", label: "Dots" },
+  { value: "rounded", label: "Rounded" },
+];
 
 const ECC_OPTIONS: { value: ErrorCorrectionLevel; label: string }[] = [
   { value: "L", label: "Low · 7%" },
@@ -26,6 +33,7 @@ const App = () => {
     useState<ErrorCorrectionLevel>("M");
   const [foregroundColor, setForegroundColor] = useState("#0f172a");
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+  const [shape, setShape] = useState<QRShape>("square");
   const [showLogo, setShowLogo] = useState(true);
   const [logoSize, setLogoSize] = useState(0.3);
 
@@ -102,6 +110,7 @@ const App = () => {
               errorCorrectionLevel={errorCorrectionLevel}
               foregroundColor={foregroundColor}
               backgroundColor={backgroundColor}
+              shape={shape}
               logoSize={logoSize}
             >
               {showLogo ? <ReactLogo /> : undefined}
@@ -163,6 +172,21 @@ const App = () => {
                 }
               >
                 {ECC_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className={fieldLabel}>
+              <span>Shape</span>
+              <select
+                className={inputBase}
+                value={shape}
+                onChange={(e) => setShape(e.target.value as QRShape)}
+              >
+                {SHAPE_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>
                     {o.label}
                   </option>

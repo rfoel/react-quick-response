@@ -15,7 +15,8 @@ type QRShape =
   | "diamond"
   | "star"
   | "plus"
-  | "triangle";
+  | "triangle"
+  | "fluid";
 type CornerBorderStyle = "square" | "circle" | "rounded" | "diamond";
 type CornerCenterStyle =
   | "square"
@@ -38,6 +39,7 @@ const SHAPE_OPTIONS: { value: QRShape; label: string }[] = [
   { value: "star", label: "Star" },
   { value: "plus", label: "Plus" },
   { value: "triangle", label: "Triangle" },
+  { value: "fluid", label: "Fluid" },
 ];
 
 const CORNER_BORDER_OPTIONS: { value: CornerBorderStyle; label: string }[] = [

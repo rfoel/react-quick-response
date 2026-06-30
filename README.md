@@ -89,6 +89,8 @@ straight where they touch.
 - `star` — each module is a four-point star.
 - `plus` — each module is a plus / cross.
 - `triangle` — each module is an upward triangle.
+- `fluid` — fully connected: outer corners round outward and inner notches are
+  filled with concave fillets, so the whole code flows like liquid.
 
 The non-rounded standalone shapes (`diamond`, `star`, `plus`, `triangle`)
 cover less area per module, so pair them with a higher `errorCorrectionLevel`
@@ -153,7 +155,7 @@ Tip: bump `errorCorrectionLevel` to `"H"` for the biggest logo, or set
 | `margin`               | `number`                            | `4`                    | Quiet-zone padding around the QR code, in pixels                     |
 | `foregroundColor`      | `string`                            | `"#000"`               | Color of the QR code modules                                         |
 | `backgroundColor`      | `string`                            | `"#fff"`               | Background color of the QR code                                      |
-| `shape`                | `"square" \| "dots" \| "rounded" \| "classy" \| "classy-rounded"` | `"square"` | Shape of the modules                                  |
+| `shape`                | `"square" \| "dots" \| "rounded" \| "classy" \| "classy-rounded" \| "vertical" \| "horizontal" \| "diamond" \| "star" \| "plus" \| "triangle" \| "fluid"` | `"square"` | Shape of the modules |
 | `cornerBorderStyle`    | `"square" \| "circle" \| "rounded" \| "diamond"` | `"square"` | Outer-ring style of the three finder patterns ("eyes")          |
 | `cornerCenterStyle`    | `"square" \| "circle" \| "rounded" \| "diamond" \| "star" \| "plus" \| "triangle"` | `"square"` | Center-dot style of the three finder patterns |
 | `cornerBorderColor`    | `string`                            | _`foregroundColor`_    | Color of the finder-pattern outer rings                              |

@@ -26,7 +26,8 @@ export type QRShape =
   | "diamond"
   | "star"
   | "plus"
-  | "triangle";
+  | "triangle"
+  | "fluid";
 
 /**
  * Outer ring of the three finder patterns ("eyes"). Frame-shaped styles only,
@@ -83,6 +84,52 @@ function plusPath(px: number, py: number, s: number): string {
     `M${r3(b)},${r3(e)}H${r3(c)}V${r3(f)}H${r3(d)}V${r3(g)}H${r3(c)}` +
     `V${r3(h)}H${r3(b)}V${r3(g)}H${r3(a)}V${r3(f)}H${r3(b)}Z`
   );
+}
+
+type Neighbours = {
+  up: boolean;
+  down: boolean;
+  left: boolean;
+  right: boolean;
+  ul: boolean;
+  ur: boolean;
+  dl: boolean;
+  dr: boolean;
+};
+
+// Fully-connected "fluid" module. Each corner is traced between the midpoints
+// of its two edges (radius = half a cell): a convex arc where both sides are
+// empty, a concave fillet where both sides are filled but the diagonal is
+// empty (smoothing the inner notch), or a square corner otherwise.
+function fluidPath(px: number, py: number, s: number, n: Neighbours): string {
+  const x0 = px;
+  const y0 = py;
+  const x1 = px + s;
+  const y1 = py + s;
+  const cx = px + s / 2;
+  const cy = py + s / 2;
+  const R = r3(s / 2);
+
+  const corner = (
+    sideA: boolean,
+    sideB: boolean,
+    diag: boolean,
+    ex: number,
+    ey: number,
+    kx: number,
+    ky: number
+  ) => {
+    if (!sideA && !sideB) return `A${R},${R} 0 0 1 ${r3(ex)},${r3(ey)}`;
+    if (sideA && sideB && !diag) return `A${R},${R} 0 0 0 ${r3(ex)},${r3(ey)}`;
+    return `L${r3(kx)},${r3(ky)}L${r3(ex)},${r3(ey)}`;
+  };
+
+  let d = `M${r3(cx)},${r3(y0)}`;
+  d += corner(n.up, n.right, n.ur, x1, cy, x1, y0); // top-right
+  d += corner(n.down, n.right, n.dr, cx, y1, x1, y1); // bottom-right
+  d += corner(n.down, n.left, n.dl, x0, cy, x0, y1); // bottom-left
+  d += corner(n.up, n.left, n.ul, cx, y0, x0, y0); // top-left
+  return d + "Z";
 }
 
 function starPath(px: number, py: number, s: number): string {
@@ -438,6 +485,17 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
             path += plusPath(px, py, cellSize);
           } else if (shape === "star") {
             path += starPath(px, py, cellSize);
+          } else if (shape === "fluid") {
+            path += fluidPath(px, py, cellSize, {
+              up: filled(x, y - 1),
+              down: filled(x, y + 1),
+              left: filled(x - 1, y),
+              right: filled(x + 1, y),
+              ul: filled(x - 1, y - 1),
+              ur: filled(x + 1, y - 1),
+              dl: filled(x - 1, y + 1),
+              dr: filled(x + 1, y + 1),
+            });
           } else {
             // Neighbour-aware corner rounding. A corner only rounds where the
             // module has no neighbour on either of its two adjacent sides.

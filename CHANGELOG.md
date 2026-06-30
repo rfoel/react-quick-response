@@ -1,3 +1,16 @@
+# [1.3.0](https://github.com/rfoel/react-quick-response/compare/v1.2.0...v1.3.0) (2026-06-30)
+
+
+### Bug Fixes
+
+* **lib:** drop triangle from cornerCenterStyle ([275398c](https://github.com/rfoel/react-quick-response/commit/275398c03e86e8c4c18885b85fe148160260eef1))
+
+
+### Features
+
+* **lib:** add corner styles and more module shapes ([268371d](https://github.com/rfoel/react-quick-response/commit/268371d38ff7538a5b95138534fd6a2fd9f4ad4f))
+* **lib:** add fluid module shape ([8277ecd](https://github.com/rfoel/react-quick-response/commit/8277ecdd75d8e8b615a8664f7ca3f133c28940af))
+
 # [1.2.0](https://github.com/rfoel/react-quick-response/compare/v1.1.0...v1.2.0) (2026-06-08)
 
 

@@ -70,11 +70,51 @@ function App() {
 ```tsx
 <ReactQR value="https://example.com" shape="dots" />
 <ReactQR value="https://example.com" shape="rounded" />
+<ReactQR value="https://example.com" shape="classy" />
+<ReactQR value="https://example.com" shape="classy-rounded" />
 ```
 
-`rounded` rounds a module's corner only where it has no neighbour, so
-connected runs stay straight where they touch — giving smooth, blob-like
-modules. `dots` renders every module as a circle.
+All shapes except `dots` are neighbour-aware: a corner only rounds where the
+module has no neighbour on either adjacent side, so connected runs stay
+straight where they touch.
+
+- `dots` — every module is a circle.
+- `rounded` — all outer corners rounded into smooth blobs.
+- `classy` — two opposite corners cut with a straight diagonal (chamfer), the
+  other two kept square — sharp, angular leaves with no curves.
+- `classy-rounded` — same leaf, but the two corners are rounded instead of cut.
+- `vertical` — modules merge into vertical bars with rounded ends.
+- `horizontal` — modules merge into horizontal bars with rounded ends.
+- `diamond` — each module is a rotated square (rhombus).
+- `star` — each module is a four-point star.
+- `plus` — each module is a plus / cross.
+- `triangle` — each module is an upward triangle.
+
+The non-rounded standalone shapes (`diamond`, `star`, `plus`, `triangle`)
+cover less area per module, so pair them with a higher `errorCorrectionLevel`
+if scans get flaky.
+
+### Corner (finder pattern) styles
+
+Style the three "eyes" independently of the body modules — outer ring and
+center dot each get their own shape and color.
+
+```tsx
+<ReactQR
+  value="https://example.com"
+  shape="dots"
+  cornerBorderStyle="rounded"
+  cornerCenterStyle="circle"
+  cornerBorderColor="#2563eb"
+  cornerCenterColor="#1d4ed8"
+/>
+```
+
+`cornerBorderStyle` is the outer ring — frame shapes only, so the eye stays
+scannable: `square`, `circle`, `rounded`, or `diamond`. `cornerCenterStyle`
+is the solid center dot and accepts any module-like shape: `square`, `circle`,
+`rounded`, `diamond`, `star`, `plus`, or `triangle`. Both colors fall back to
+`foregroundColor` when unset.
 
 ### QR code with a logo
 
@@ -113,7 +153,11 @@ Tip: bump `errorCorrectionLevel` to `"H"` for the biggest logo, or set
 | `margin`               | `number`                            | `4`                    | Quiet-zone padding around the QR code, in pixels                     |
 | `foregroundColor`      | `string`                            | `"#000"`               | Color of the QR code modules                                         |
 | `backgroundColor`      | `string`                            | `"#fff"`               | Background color of the QR code                                      |
-| `shape`                | `"square" \| "dots" \| "rounded"`   | `"square"`             | Shape of the modules                                                 |
+| `shape`                | `"square" \| "dots" \| "rounded" \| "classy" \| "classy-rounded"` | `"square"` | Shape of the modules                                  |
+| `cornerBorderStyle`    | `"square" \| "circle" \| "rounded" \| "diamond"` | `"square"` | Outer-ring style of the three finder patterns ("eyes")          |
+| `cornerCenterStyle`    | `"square" \| "circle" \| "rounded" \| "diamond" \| "star" \| "plus" \| "triangle"` | `"square"` | Center-dot style of the three finder patterns |
+| `cornerBorderColor`    | `string`                            | _`foregroundColor`_    | Color of the finder-pattern outer rings                              |
+| `cornerCenterColor`    | `string`                            | _`foregroundColor`_    | Color of the finder-pattern center dots                              |
 | `logoSize`             | `number`                            | _largest scannable_    | Logo overlay size as a fraction of the QR size (0–1)                 |
 | `children`             | `React.ReactNode`                   | `undefined`            | SVG content to overlay in the center (the logo)                      |
 

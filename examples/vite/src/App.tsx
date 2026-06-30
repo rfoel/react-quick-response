@@ -4,12 +4,57 @@ import ReactLogo from "./assets/react.svg?react";
 import QrcodeIcon from "./QrcodeIcon";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
-type QRShape = "square" | "dots" | "rounded";
+type QRShape =
+  | "square"
+  | "dots"
+  | "rounded"
+  | "classy"
+  | "classy-rounded"
+  | "vertical"
+  | "horizontal"
+  | "diamond"
+  | "star"
+  | "plus"
+  | "triangle";
+type CornerBorderStyle = "square" | "circle" | "rounded" | "diamond";
+type CornerCenterStyle =
+  | "square"
+  | "circle"
+  | "rounded"
+  | "diamond"
+  | "star"
+  | "plus"
+  | "triangle";
 
 const SHAPE_OPTIONS: { value: QRShape; label: string }[] = [
   { value: "square", label: "Square" },
   { value: "dots", label: "Dots" },
   { value: "rounded", label: "Rounded" },
+  { value: "classy", label: "Classy" },
+  { value: "classy-rounded", label: "Classy rounded" },
+  { value: "vertical", label: "Vertical bars" },
+  { value: "horizontal", label: "Horizontal bars" },
+  { value: "diamond", label: "Diamond" },
+  { value: "star", label: "Star" },
+  { value: "plus", label: "Plus" },
+  { value: "triangle", label: "Triangle" },
+];
+
+const CORNER_BORDER_OPTIONS: { value: CornerBorderStyle; label: string }[] = [
+  { value: "square", label: "Square" },
+  { value: "circle", label: "Circle" },
+  { value: "rounded", label: "Rounded" },
+  { value: "diamond", label: "Diamond" },
+];
+
+const CORNER_CENTER_OPTIONS: { value: CornerCenterStyle; label: string }[] = [
+  { value: "square", label: "Square" },
+  { value: "circle", label: "Circle" },
+  { value: "rounded", label: "Rounded" },
+  { value: "diamond", label: "Diamond" },
+  { value: "star", label: "Star" },
+  { value: "plus", label: "Plus" },
+  { value: "triangle", label: "Triangle" },
 ];
 
 const ECC_OPTIONS: { value: ErrorCorrectionLevel; label: string }[] = [
@@ -34,6 +79,12 @@ const App = () => {
   const [foregroundColor, setForegroundColor] = useState("#0f172a");
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
   const [shape, setShape] = useState<QRShape>("square");
+  const [cornerBorderStyle, setCornerBorderStyle] =
+    useState<CornerBorderStyle>("square");
+  const [cornerCenterStyle, setCornerCenterStyle] =
+    useState<CornerCenterStyle>("square");
+  const [cornerBorderColor, setCornerBorderColor] = useState("#0f172a");
+  const [cornerCenterColor, setCornerCenterColor] = useState("#0f172a");
   const [showLogo, setShowLogo] = useState(true);
   const [logoSize, setLogoSize] = useState(0.3);
 
@@ -111,6 +162,10 @@ const App = () => {
               foregroundColor={foregroundColor}
               backgroundColor={backgroundColor}
               shape={shape}
+              cornerBorderStyle={cornerBorderStyle}
+              cornerCenterStyle={cornerCenterStyle}
+              cornerBorderColor={cornerBorderColor}
+              cornerCenterColor={cornerCenterColor}
               logoSize={logoSize}
             >
               {showLogo ? <ReactLogo /> : undefined}
@@ -193,6 +248,62 @@ const App = () => {
                 ))}
               </select>
             </label>
+
+            <div className="flex gap-3.5">
+              <label className={`${fieldLabel} flex-1`}>
+                <span>Corner border</span>
+                <select
+                  className={inputBase}
+                  value={cornerBorderStyle}
+                  onChange={(e) =>
+                    setCornerBorderStyle(e.target.value as CornerBorderStyle)
+                  }
+                >
+                  {CORNER_BORDER_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className={`${fieldLabel} flex-1`}>
+                <span>Corner center</span>
+                <select
+                  className={inputBase}
+                  value={cornerCenterStyle}
+                  onChange={(e) =>
+                    setCornerCenterStyle(e.target.value as CornerCenterStyle)
+                  }
+                >
+                  {CORNER_CENTER_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <div className="flex gap-3.5">
+              <label className={`${fieldLabel} flex-1`}>
+                <span>Corner border color</span>
+                <input
+                  className="h-10 w-full cursor-pointer rounded-lg border border-slate-700 bg-slate-800/60"
+                  type="color"
+                  value={cornerBorderColor}
+                  onChange={(e) => setCornerBorderColor(e.target.value)}
+                />
+              </label>
+              <label className={`${fieldLabel} flex-1`}>
+                <span>Corner center color</span>
+                <input
+                  className="h-10 w-full cursor-pointer rounded-lg border border-slate-700 bg-slate-800/60"
+                  type="color"
+                  value={cornerCenterColor}
+                  onChange={(e) => setCornerCenterColor(e.target.value)}
+                />
+              </label>
+            </div>
 
             <div className="flex gap-3.5">
               <label className={`${fieldLabel} flex-1`}>

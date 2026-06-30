@@ -24,8 +24,7 @@ type CornerCenterStyle =
   | "rounded"
   | "diamond"
   | "star"
-  | "plus"
-  | "triangle";
+  | "plus";
 
 const SHAPE_OPTIONS: { value: QRShape; label: string }[] = [
   { value: "square", label: "Square" },
@@ -56,7 +55,6 @@ const CORNER_CENTER_OPTIONS: { value: CornerCenterStyle; label: string }[] = [
   { value: "diamond", label: "Diamond" },
   { value: "star", label: "Star" },
   { value: "plus", label: "Plus" },
-  { value: "triangle", label: "Triangle" },
 ];
 
 const ECC_OPTIONS: { value: ErrorCorrectionLevel; label: string }[] = [

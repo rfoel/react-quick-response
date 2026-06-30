@@ -114,9 +114,8 @@ center dot each get their own shape and color.
 
 `cornerBorderStyle` is the outer ring — frame shapes only, so the eye stays
 scannable: `square`, `circle`, `rounded`, or `diamond`. `cornerCenterStyle`
-is the solid center dot and accepts any module-like shape: `square`, `circle`,
-`rounded`, `diamond`, `star`, `plus`, or `triangle`. Both colors fall back to
-`foregroundColor` when unset.
+is the solid center dot and accepts `square`, `circle`, `rounded`, `diamond`,
+`star`, or `plus`. Both colors fall back to `foregroundColor` when unset.
 
 ### QR code with a logo
 
@@ -157,7 +156,7 @@ Tip: bump `errorCorrectionLevel` to `"H"` for the biggest logo, or set
 | `backgroundColor`      | `string`                            | `"#fff"`               | Background color of the QR code                                      |
 | `shape`                | `"square" \| "dots" \| "rounded" \| "classy" \| "classy-rounded" \| "vertical" \| "horizontal" \| "diamond" \| "star" \| "plus" \| "triangle" \| "fluid"` | `"square"` | Shape of the modules |
 | `cornerBorderStyle`    | `"square" \| "circle" \| "rounded" \| "diamond"` | `"square"` | Outer-ring style of the three finder patterns ("eyes")          |
-| `cornerCenterStyle`    | `"square" \| "circle" \| "rounded" \| "diamond" \| "star" \| "plus" \| "triangle"` | `"square"` | Center-dot style of the three finder patterns |
+| `cornerCenterStyle`    | `"square" \| "circle" \| "rounded" \| "diamond" \| "star" \| "plus"` | `"square"` | Center-dot style of the three finder patterns |
 | `cornerBorderColor`    | `string`                            | _`foregroundColor`_    | Color of the finder-pattern outer rings                              |
 | `cornerCenterColor`    | `string`                            | _`foregroundColor`_    | Color of the finder-pattern center dots                              |
 | `logoSize`             | `number`                            | _largest scannable_    | Logo overlay size as a fraction of the QR size (0–1)                 |

@@ -42,8 +42,7 @@ export type CornerCenterStyle =
   | "rounded"
   | "diamond"
   | "star"
-  | "plus"
-  | "triangle";
+  | "plus";
 
 // Round to 3 decimals to keep generated path strings compact.
 const r3 = (n: number): number => Math.round(n * 1000) / 1000;
@@ -262,8 +261,6 @@ function cornerCenterPath(
       return starPath(px, py, size);
     case "plus":
       return plusPath(px, py, size);
-    case "triangle":
-      return trianglePath(px, py, size);
     default:
       return rectPath(px, py, size, size);
   }

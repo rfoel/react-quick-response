@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/rfoel/react-quick-response/compare/v1.3.0...v1.4.0) (2026-07-28)
+
+
+### Features
+
+* split into pnpm monorepo and add gradients, export and encoder options ([a868a25](https://github.com/rfoel/react-quick-response/commit/a868a25bf8f068069c7f86b2ab5b7274fd5c88cc))
+
 # [1.3.0](https://github.com/rfoel/react-quick-response/compare/v1.2.0...v1.3.0) (2026-06-30)
 
 

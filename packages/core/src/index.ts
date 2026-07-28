@@ -11,7 +11,7 @@ export type {
   ResolvedGradient,
 } from "./gradients";
 export { buildQR, LOGO_SAFE_RATIO, MAX_VERSION, MIN_VERSION } from "./qr";
-export type { QRGeometry, QRGeometryOptions, QRLogo } from "./qr";
+export type { QRFrame, QRGeometry, QRGeometryOptions, QRLogo } from "./qr";
 export { toSVGString } from "./svg";
 export type { QRSvgOptions } from "./svg";
 export {

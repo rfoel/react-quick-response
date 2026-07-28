@@ -16,6 +16,7 @@ import {
   type EncodeMode,
   type ErrorCorrectionLevel,
   type Gradient,
+  type QRFrame,
   type QRShape,
   type ResolvedGradient,
 } from "quick-response-core";
@@ -27,6 +28,7 @@ export type {
   EncodeMode,
   ErrorCorrectionLevel,
   Gradient,
+  QRFrame,
   QRShape,
 } from "quick-response-core";
 
@@ -142,6 +144,11 @@ export interface ReactQRProps extends PropsWithChildren {
    * SVG children; `children` wins when both are given.
    */
   image?: string;
+  /**
+   * Overall silhouette. "circle" shrinks the code to fit a disc and fills the
+   * ring around it with decorative modules. Default "square".
+   */
+  frame?: QRFrame;
   /** Module shape: "square", "dots", or "rounded". Default "square". */
   shape?: QRShape;
   /** Outer ring style of the finder patterns. Default "square". */
@@ -183,6 +190,7 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
       logoMargin = 0,
       logoKnockout = true,
       image,
+      frame = "square",
       shape = "square",
       cornerBorderStyle = "square",
       cornerCenterStyle = "square",
@@ -229,6 +237,7 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
           size,
           errorCorrectionLevel,
           margin,
+          frame,
           shape,
           cornerBorderStyle,
           cornerCenterStyle,
@@ -248,6 +257,7 @@ export const ReactQR = forwardRef<SVGSVGElement, ReactQRProps>(
       size,
       errorCorrectionLevel,
       margin,
+      frame,
       shape,
       cornerBorderStyle,
       cornerCenterStyle,

@@ -190,6 +190,25 @@ Any fill takes a linear or radial gradient. `rotation` is in **degrees**
 the foreground when unset. Gradient ids are derived from the gradient itself,
 so multiple QR codes on one page never collide and hydration stays stable.
 
+### Circular frame
+
+`frame="circle"` shrinks the code to the square inscribed in a disc and fills
+the ring around it with decorative modules sampled from the same data — this is
+qr-code-styling's `shape: "circle"`.
+
+```tsx
+<ReactQR
+  value="https://example.com"
+  size={400}
+  frame="circle"
+  shape="dots"
+  backgroundRound={1}
+/>
+```
+
+The code ends up ~30% smaller for the same `size`, so raise `size` or
+`errorCorrectionLevel` and check it with a real scanner.
+
 ### Rounded or circular background
 
 ```tsx
@@ -256,6 +275,7 @@ code still grows when the data needs it.
 | `backgroundColor`      | `string`                            | `"#fff"`               | Background color of the QR code                                      |
 | `backgroundGradient`   | `Gradient \| null`                  | `null`                 | Gradient behind the QR; wins over `backgroundColor`                    |
 | `backgroundRound`      | `number`                            | `0`                    | Background corner radius as a fraction of `size` (`1` = circle)       |
+| `frame`                | `"square" \| "circle"`              | `"square"`             | Overall silhouette (qr-code-styling's `shape`)                        |
 | `shape`                | `"square" \| "dots" \| "rounded" \| "classy" \| "classy-rounded" \| "vertical" \| "horizontal" \| "diamond" \| "star" \| "plus" \| "triangle" \| "fluid"` | `"square"` | Shape of the modules |
 | `cornerBorderStyle`    | `"square" \| "circle" \| "rounded" \| "diamond"` | `"square"` | Outer-ring style of the three finder patterns ("eyes")          |
 | `cornerCenterStyle`    | `"square" \| "circle" \| "rounded" \| "diamond" \| "star" \| "plus"` | `"square"` | Center-dot style of the three finder patterns |

@@ -183,6 +183,27 @@ the encoder still grows the matrix when the data needs it. `mode` accepts
 `"auto"` (default), `"numeric"`, `"alphanumeric"` and `"byte"`, and throws when
 the value does not fit the chosen charset.
 
+### Circular frame
+
+`frame: "circle"` is qr-code-styling's `shape: "circle"`: the code shrinks to
+the square inscribed in the disc, and the ring left over is filled with
+decorative modules sampled from the same data, separated from the code by one
+empty module.
+
+```ts
+toSVGString({
+  value: "https://example.com",
+  size: 400,
+  frame: "circle",
+  shape: "dots",
+  backgroundRound: 1, // make the background a disc too
+});
+```
+
+The code itself ends up ~30% smaller (÷√2) for the same `size`, so raise `size`
+or `errorCorrectionLevel` and test with a real scanner. `geometry.gridCount`
+covers the decorative rings; `moduleCount` stays the real matrix size.
+
 ### Rounded background
 
 `backgroundRound` is a fraction of the size, `0` (square) to `1` (circle):
@@ -201,6 +222,7 @@ buildQR({ value: "hi", size: 256, backgroundRound: 0.25 });
 | `size`                 | `number`                 | `128`        | Width and height of the square SVG                 |
 | `errorCorrectionLevel` | `"L" \| "M" \| "Q" \| "H"` | `"L"`      | Higher survives more damage, denser code           |
 | `margin`               | `number`                 | `4`          | Quiet-zone padding                                 |
+| `frame`                | `"square" \| "circle"`   | `"square"`   | Overall silhouette (qr-code-styling's `shape`)      |
 | `shape`                | `QRShape`                | `"square"`   | Body module shape                                  |
 | `cornerBorderStyle`    | `CornerBorderStyle`      | `"square"`   | Outer ring of the finder patterns                  |
 | `cornerCenterStyle`    | `CornerCenterStyle`      | `"square"`   | Center dot of the finder patterns                  |

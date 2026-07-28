@@ -1,8 +1,8 @@
 # quick-response
 
 Customizable QR codes as crisp SVG — a centered logo overlay, twelve module
-shapes, styleable finder patterns, gradients, PNG/JPEG/WebP export,
-**zero third-party dependencies**.
+shapes, square or circular frames, styleable finder patterns, gradients,
+PNG/JPEG/WebP export, **zero third-party dependencies**.
 
 **[Live demo →](https://react-quick-response.rfoel.dev)**
 

@@ -40,6 +40,9 @@ export const LOGO_SAFE_RATIO: Record<ErrorCorrectionLevel, number> = {
 export const MIN_VERSION = qrcodegen.QrCode.MIN_VERSION;
 export const MAX_VERSION = qrcodegen.QrCode.MAX_VERSION;
 
+/** Overall silhouette of the code: a square, or a filled disc. */
+export type QRFrame = "square" | "circle";
+
 export interface QRLogo {
   /** Logo width, in user units. */
   width: number;
@@ -55,6 +58,13 @@ export interface QRLogo {
 export interface QRGeometryOptions {
   /** Text or URL to encode. */
   value: string;
+  /**
+   * Overall silhouette. "circle" shrinks the code to fit a disc and fills the
+   * ring around it with decorative modules sampled from the data, separated by
+   * a one-module gap. qr-code-styling calls this `shape: "circle"`.
+   * Default "square".
+   */
+  frame?: QRFrame;
   /** Width and height of the square SVG, in user units. Default 128. */
   size?: number;
   /** Error-correction level. Default "L". */
@@ -111,6 +121,13 @@ export interface QRGeometry {
   version: number;
   /** Modules per side of the QR matrix. */
   moduleCount: number;
+  /**
+   * Modules per side of everything that gets drawn. Same as `moduleCount` for
+   * a square frame; larger for a circle, which adds decorative rings.
+   */
+  gridCount: number;
+  /** Top-left corner of the drawn grid, in user units. */
+  origin: { x: number; y: number };
   /** Side of one module, in user units. */
   cellSize: number;
   /** Rect covering the whole SVG, quiet zone included. */
@@ -151,6 +168,7 @@ export function buildQR(options: QRGeometryOptions): QRGeometry {
     size = 128,
     errorCorrectionLevel = "L",
     margin = 4,
+    frame = "square",
     shape = "square",
     cornerBorderStyle = "square",
     cornerCenterStyle = "square",
@@ -173,19 +191,32 @@ export function buildQR(options: QRGeometryOptions): QRGeometry {
     boostErrorCorrectionLevel
   );
   const moduleCount = qr.size;
-  const cellSize = (size - margin * 2) / moduleCount;
   const modules = qr.getModules();
 
-  // Logo knockout, in module coordinates. -1 bounds match nothing.
+  // A circular frame inscribes the code in the disc, so it shrinks by √2 and
+  // the leftover room becomes decorative rings around it.
+  const available = size - margin * 2;
+  const circle = frame === "circle";
+  const cellSize = (circle ? available / Math.SQRT2 : available) / moduleCount;
+  // How many decorative rings fit around the code, and where the real matrix
+  // starts inside the drawn grid.
+  const rings =
+    circle && cellSize > 0
+      ? Math.max(0, Math.floor((available / cellSize - moduleCount) / 2))
+      : 0;
+  const gridCount = moduleCount + rings * 2;
+  // Centered in the SVG; with a square frame this is exactly `margin`.
+  const originX = margin + (available - gridCount * cellSize) / 2;
+  const originY = originX;
+
+  // Logo knockout, in grid coordinates. -1 bounds match nothing.
   let knockout = { sx: -1, sy: -1, ex: -1, ey: -1 };
   let logoRect: Rect | null = null;
   if (logo && logo.width > 0 && logo.height > 0 && cellSize > 0) {
     const gap = logo.margin ?? 0;
-    const startXf = (moduleCount - logo.width / cellSize) / 2;
-    const startYf = (moduleCount - logo.height / cellSize) / 2;
     logoRect = {
-      x: margin + startXf * cellSize,
-      y: margin + startYf * cellSize,
+      x: size / 2 - logo.width / 2,
+      y: size / 2 - logo.height / 2,
       width: logo.width,
       height: logo.height,
     };
@@ -193,8 +224,8 @@ export function buildQR(options: QRGeometryOptions): QRGeometry {
       // The cleared area is the logo box grown by `margin` on every side.
       const clearW = (logo.width + gap * 2) / cellSize;
       const clearH = (logo.height + gap * 2) / cellSize;
-      const clearX = (moduleCount - clearW) / 2;
-      const clearY = (moduleCount - clearH) / 2;
+      const clearX = (size / 2 - originX) / cellSize - clearW / 2;
+      const clearY = (size / 2 - originY) / cellSize - clearH / 2;
       knockout = {
         sx: Math.floor(clearX),
         sy: Math.floor(clearY),
@@ -206,19 +237,47 @@ export function buildQR(options: QRGeometryOptions): QRGeometry {
 
   // The three 7x7 finder patterns ("eyes"); drawn separately so their
   // ring/center can be styled independently of the body modules.
-  const inFinder = (x: number, y: number) =>
-    (x < 7 && y < 7) ||
-    (x >= moduleCount - 7 && y < 7) ||
-    (x < 7 && y >= moduleCount - 7);
+  const inFinder = (x: number, y: number) => {
+    const lx = x - rings;
+    const ly = y - rings;
+    if (lx < 0 || ly < 0 || lx >= moduleCount || ly >= moduleCount) return false;
+    return (
+      (lx < 7 && ly < 7) ||
+      (lx >= moduleCount - 7 && ly < 7) ||
+      (lx < 7 && ly >= moduleCount - 7)
+    );
+  };
+
+  // Sample the matrix for a decorative module: indices outside the code wrap
+  // back into it, so the ring looks like it belongs to the same data.
+  const wrap = (k: number) => {
+    const i = k < rings * 2 ? k : k >= moduleCount ? k - rings * 2 : k - rings;
+    return Math.min(Math.max(i, 0), moduleCount - 1);
+  };
+  const half = gridCount / 2;
+
+  const dark = (x: number, y: number): boolean => {
+    const lx = x - rings;
+    const ly = y - rings;
+    if (lx >= 0 && ly >= 0 && lx < moduleCount && ly < moduleCount)
+      return modules[ly][lx];
+    if (!circle) return false;
+    // Leave one empty module between the code and the decorative rings.
+    if (lx >= -1 && ly >= -1 && lx <= moduleCount && ly <= moduleCount)
+      return false;
+    // Only modules whose center falls inside the disc.
+    if (Math.hypot(x + 0.5 - half, y + 0.5 - half) > half) return false;
+    return modules[wrap(y)][wrap(x)];
+  };
 
   // A module is drawn when it's dark, not part of a finder pattern, and not
   // knocked out by the logo.
   const filled = (x: number, y: number) =>
     x >= 0 &&
     y >= 0 &&
-    x < moduleCount &&
-    y < moduleCount &&
-    modules[y][x] &&
+    x < gridCount &&
+    y < gridCount &&
+    dark(x, y) &&
     !inFinder(x, y) &&
     !(
       x >= knockout.sx &&
@@ -228,13 +287,13 @@ export function buildQR(options: QRGeometryOptions): QRGeometry {
     );
 
   let modulesPath = "";
-  for (let y = 0; y < moduleCount; y++) {
-    for (let x = 0; x < moduleCount; x++) {
+  for (let y = 0; y < gridCount; y++) {
+    for (let x = 0; x < gridCount; x++) {
       if (!filled(x, y)) continue;
       modulesPath += modulePath(
         shape,
-        margin + x * cellSize,
-        margin + y * cellSize,
+        originX + x * cellSize,
+        originY + y * cellSize,
         cellSize,
         {
           up: filled(x, y - 1),
@@ -250,17 +309,17 @@ export function buildQR(options: QRGeometryOptions): QRGeometry {
     }
   }
 
-  // Top-left module of each finder block: TL, TR, BL.
+  // Top-left module of each finder block, in grid coordinates: TL, TR, BL.
   const origins: [number, number][] = [
-    [0, 0],
-    [moduleCount - 7, 0],
-    [0, moduleCount - 7],
+    [rings, rings],
+    [rings + moduleCount - 7, rings],
+    [rings, rings + moduleCount - 7],
   ];
   let border = "";
   let center = "";
   for (const [cx, cy] of origins) {
-    const ox = margin + cx * cellSize;
-    const oy = margin + cy * cellSize;
+    const ox = originX + cx * cellSize;
+    const oy = originY + cy * cellSize;
     border += cornerBorderPath(ox, oy, cellSize, cornerBorderStyle);
     center += cornerCenterPath(ox, oy, cellSize, cornerCenterStyle);
   }
@@ -272,6 +331,8 @@ export function buildQR(options: QRGeometryOptions): QRGeometry {
     margin,
     version: qr.version,
     moduleCount,
+    gridCount,
+    origin: { x: originX, y: originY },
     cellSize,
     backgroundPath: round
       ? roundRectPath(0, 0, size, size, (size / 2) * round)

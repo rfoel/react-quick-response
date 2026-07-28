@@ -5,6 +5,7 @@ import {
   type CornerBorderStyle,
   type CornerCenterStyle,
   type ErrorCorrectionLevel,
+  type QRFrame,
   type QRShape,
 } from "react-quick-response";
 import ReactLogo from "./assets/react.svg?react";
@@ -41,6 +42,11 @@ const CORNER_CENTER_OPTIONS: { value: CornerCenterStyle; label: string }[] = [
   { value: "plus", label: "Plus" },
 ];
 
+const FRAME_OPTIONS: { value: QRFrame; label: string }[] = [
+  { value: "square", label: "Square" },
+  { value: "circle", label: "Circle" },
+];
+
 const ECC_OPTIONS: { value: ErrorCorrectionLevel; label: string }[] = [
   { value: "L", label: "Low · 7%" },
   { value: "M", label: "Medium · 15%" },
@@ -62,6 +68,7 @@ const App = () => {
     useState<ErrorCorrectionLevel>("M");
   const [foregroundColor, setForegroundColor] = useState("#0f172a");
   const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+  const [frame, setFrame] = useState<QRFrame>("square");
   const [shape, setShape] = useState<QRShape>("square");
   const [cornerBorderStyle, setCornerBorderStyle] =
     useState<CornerBorderStyle>("square");
@@ -150,6 +157,7 @@ const App = () => {
               backgroundColor={backgroundColor}
               backgroundRound={backgroundRound}
               logoMargin={logoMargin}
+              frame={frame}
               shape={shape}
               cornerBorderStyle={cornerBorderStyle}
               cornerCenterStyle={cornerCenterStyle}
@@ -223,20 +231,36 @@ const App = () => {
               </select>
             </label>
 
-            <label className={fieldLabel}>
-              <span>Shape</span>
-              <select
-                className={inputBase}
-                value={shape}
-                onChange={(e) => setShape(e.target.value as QRShape)}
-              >
-                {SHAPE_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="flex gap-3.5">
+              <label className={`${fieldLabel} flex-1`}>
+                <span>Frame</span>
+                <select
+                  className={inputBase}
+                  value={frame}
+                  onChange={(e) => setFrame(e.target.value as QRFrame)}
+                >
+                  {FRAME_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className={`${fieldLabel} flex-1`}>
+                <span>Shape</span>
+                <select
+                  className={inputBase}
+                  value={shape}
+                  onChange={(e) => setShape(e.target.value as QRShape)}
+                >
+                  {SHAPE_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
 
             <div className="flex gap-3.5">
               <label className={`${fieldLabel} flex-1`}>

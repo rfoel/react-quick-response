@@ -61,8 +61,7 @@ export interface QRGeometryOptions {
   /**
    * Overall silhouette. "circle" shrinks the code to fit a disc and fills the
    * ring around it with decorative modules sampled from the data, separated by
-   * a one-module gap. qr-code-styling calls this `shape: "circle"`.
-   * Default "square".
+   * a one-module gap. Default "square".
    */
   frame?: QRFrame;
   /** Width and height of the square SVG, in user units. Default 128. */
@@ -79,13 +78,12 @@ export interface QRGeometryOptions {
   cornerCenterStyle?: CornerCenterStyle;
   /**
    * Corner radius of the background, as a fraction of the size (0–1). `1`
-   * makes it a circle. Default 0 (a square). qr-code-styling calls this
-   * `backgroundOptions.round`.
+   * makes it a circle. Default 0 (a square).
    */
   backgroundRound?: number;
   /**
    * Smallest QR version to use, 1–40. The encoder still grows past it when the
-   * data does not fit. qr-code-styling calls this `typeNumber`. Default 1.
+   * data does not fit. Default 1.
    */
   minVersion?: number;
   /** Largest QR version to use, 1–40. Default 40. */
@@ -107,7 +105,6 @@ export interface QRGeometryOptions {
   logo?: QRLogo | null;
   /**
    * Whether the modules behind the logo are removed. Default true.
-   * qr-code-styling calls this `imageOptions.hideBackgroundDots`.
    */
   logoKnockout?: boolean;
 }

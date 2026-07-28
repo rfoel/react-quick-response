@@ -161,8 +161,8 @@ Or skip children and pass a URL — `logoMargin` clears extra space around it,
 
 ### Gradients
 
-Any fill takes a linear or radial gradient. `rotation` is in **degrees**
-(qr-code-styling uses radians).
+Any fill takes a linear or radial gradient. `rotation` is in **degrees**, not
+radians.
 
 ```tsx
 <ReactQR
@@ -193,8 +193,7 @@ so multiple QR codes on one page never collide and hydration stays stable.
 ### Circular frame
 
 `frame="circle"` shrinks the code to the square inscribed in a disc and fills
-the ring around it with decorative modules sampled from the same data — this is
-qr-code-styling's `shape: "circle"`.
+the ring around it with decorative modules sampled from the same data.
 
 ```tsx
 <ReactQR
@@ -257,8 +256,8 @@ formats throw — inline the logo (SVG children or a data URI) to avoid it.
 <ReactQR value="1234" mode="numeric" />  {/* force one segment mode */}
 ```
 
-`minVersion` is qr-code-styling's `typeNumber`: a floor, not a fixed size — the
-code still grows when the data needs it.
+`minVersion` is a floor, not a fixed size — the code still grows when the data
+needs it.
 
 ## API Reference
 
@@ -275,7 +274,7 @@ code still grows when the data needs it.
 | `backgroundColor`      | `string`                            | `"#fff"`               | Background color of the QR code                                      |
 | `backgroundGradient`   | `Gradient \| null`                  | `null`                 | Gradient behind the QR; wins over `backgroundColor`                    |
 | `backgroundRound`      | `number`                            | `0`                    | Background corner radius as a fraction of `size` (`1` = circle)       |
-| `frame`                | `"square" \| "circle"`              | `"square"`             | Overall silhouette (qr-code-styling's `shape`)                        |
+| `frame`                | `"square" \| "circle"`              | `"square"`             | Overall silhouette: a square or a disc                                 |
 | `shape`                | `"square" \| "dots" \| "rounded" \| "classy" \| "classy-rounded" \| "vertical" \| "horizontal" \| "diamond" \| "star" \| "plus" \| "triangle" \| "fluid"` | `"square"` | Shape of the modules |
 | `cornerBorderStyle`    | `"square" \| "circle" \| "rounded" \| "diamond"` | `"square"` | Outer-ring style of the three finder patterns ("eyes")          |
 | `cornerCenterStyle`    | `"square" \| "circle" \| "rounded" \| "diamond" \| "star" \| "plus"` | `"square"` | Center-dot style of the three finder patterns |
@@ -287,7 +286,7 @@ code still grows when the data needs it.
 | `logoMargin`           | `number`                            | `0`                    | Extra pixels cleared around the logo                                  |
 | `logoKnockout`         | `boolean`                           | `true`                 | Remove the modules behind the logo                                    |
 | `image`                | `string`                            | `undefined`            | Logo URL or data URI, drawn centered (`children` wins)                |
-| `minVersion`           | `number`                            | `1`                    | Smallest QR version (qr-code-styling's `typeNumber`)                   |
+| `minVersion`           | `number`                            | `1`                    | Smallest QR version to encode at                                       |
 | `maxVersion`           | `number`                            | `40`                   | Largest QR version                                                    |
 | `mode`                 | `"auto" \| "numeric" \| "alphanumeric" \| "byte"` | `"auto"` | How to encode the value                                       |
 | `children`             | `React.ReactNode`                   | `undefined`            | SVG content to overlay in the center (the logo)                      |

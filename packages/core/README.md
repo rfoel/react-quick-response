@@ -96,8 +96,8 @@ const box = 256 * LOGO_SAFE_RATIO.H; // 0.45 → 115.2
 
 ### Gradients
 
-Any fill can be a linear or radial gradient. `rotation` is in **degrees**
-(qr-code-styling uses radians).
+Any fill can be a linear or radial gradient. `rotation` is in **degrees**,
+not radians.
 
 ```ts
 import { toSVGString } from "quick-response-core";
@@ -178,17 +178,16 @@ buildQR({ value: "1234", mode: "numeric" }); // force one segment mode
 buildQR({ value: "hi", maskPattern: 3, boostErrorCorrectionLevel: false });
 ```
 
-`minVersion` is qr-code-styling's `typeNumber`: a floor, not a fixed size —
-the encoder still grows the matrix when the data needs it. `mode` accepts
-`"auto"` (default), `"numeric"`, `"alphanumeric"` and `"byte"`, and throws when
-the value does not fit the chosen charset.
+`minVersion` is a floor, not a fixed size — the encoder still grows the matrix
+when the data needs it. `mode` accepts `"auto"` (default), `"numeric"`,
+`"alphanumeric"` and `"byte"`, and throws when the value does not fit the
+chosen charset.
 
 ### Circular frame
 
-`frame: "circle"` is qr-code-styling's `shape: "circle"`: the code shrinks to
-the square inscribed in the disc, and the ring left over is filled with
-decorative modules sampled from the same data, separated from the code by one
-empty module.
+`frame: "circle"` shrinks the code to the square inscribed in the disc, and
+fills the ring left over with decorative modules sampled from the same data,
+separated from the code by one empty module.
 
 ```ts
 toSVGString({
@@ -222,7 +221,7 @@ buildQR({ value: "hi", size: 256, backgroundRound: 0.25 });
 | `size`                 | `number`                 | `128`        | Width and height of the square SVG                 |
 | `errorCorrectionLevel` | `"L" \| "M" \| "Q" \| "H"` | `"L"`      | Higher survives more damage, denser code           |
 | `margin`               | `number`                 | `4`          | Quiet-zone padding                                 |
-| `frame`                | `"square" \| "circle"`   | `"square"`   | Overall silhouette (qr-code-styling's `shape`)      |
+| `frame`                | `"square" \| "circle"`   | `"square"`   | Overall silhouette: a square or a disc              |
 | `shape`                | `QRShape`                | `"square"`   | Body module shape                                  |
 | `cornerBorderStyle`    | `CornerBorderStyle`      | `"square"`   | Outer ring of the finder patterns                  |
 | `cornerCenterStyle`    | `CornerCenterStyle`      | `"square"`   | Center dot of the finder patterns                  |

@@ -165,7 +165,7 @@ export interface ReactQRProps extends PropsWithChildren {
   cornerCenterGradient?: Gradient | null;
   /**
    * Smallest QR version (matrix size) to use, 1–40. The code still grows when
-   * the data needs it. qr-code-styling calls this `typeNumber`. Default 1.
+   * the data needs it. Default 1.
    */
   minVersion?: number;
   /** Largest QR version to use, 1–40. Default 40. */

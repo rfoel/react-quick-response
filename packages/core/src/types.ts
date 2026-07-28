@@ -58,8 +58,8 @@ export type ColorStop = { offset: number; color: string };
 
 /**
  * A gradient fill. `rotation` is in **degrees**, clockwise from a
- * left-to-right ramp, and only applies to linear gradients. (qr-code-styling
- * takes radians here — multiply by 180/Math.PI when porting.)
+ * left-to-right ramp, and only applies to linear gradients. Degrees, not
+ * radians.
  */
 export interface Gradient {
   type?: "linear" | "radial";

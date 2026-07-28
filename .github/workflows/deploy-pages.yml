@@ -21,18 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
-      # Root deps too: the example imports the library source (../../src),
-      # whose `react` import resolves against the repo-root node_modules.
-      - name: Install dependencies
-        run: |
-          npm install
-          npm install --prefix examples/vite
+          cache: pnpm
+      # Workspace install: the example imports the package sources through
+      # vite aliases, so no library build is needed.
+      - run: pnpm install --frozen-lockfile
       - name: Build the Vite example
-        working-directory: examples/vite
-        run: npm run build
+        run: pnpm --filter example build
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

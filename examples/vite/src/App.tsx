@@ -1,30 +1,14 @@
 import { useRef, useState } from "react";
-import { ReactQR } from "../../../src/ReactQR";
+import {
+  downloadQR,
+  ReactQR,
+  type CornerBorderStyle,
+  type CornerCenterStyle,
+  type ErrorCorrectionLevel,
+  type QRShape,
+} from "react-quick-response";
 import ReactLogo from "./assets/react.svg?react";
 import QrcodeIcon from "./QrcodeIcon";
-
-type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
-type QRShape =
-  | "square"
-  | "dots"
-  | "rounded"
-  | "classy"
-  | "classy-rounded"
-  | "vertical"
-  | "horizontal"
-  | "diamond"
-  | "star"
-  | "plus"
-  | "triangle"
-  | "fluid";
-type CornerBorderStyle = "square" | "circle" | "rounded" | "diamond";
-type CornerCenterStyle =
-  | "square"
-  | "circle"
-  | "rounded"
-  | "diamond"
-  | "star"
-  | "plus";
 
 const SHAPE_OPTIONS: { value: QRShape; label: string }[] = [
   { value: "square", label: "Square" },
@@ -87,31 +71,33 @@ const App = () => {
   const [cornerCenterColor, setCornerCenterColor] = useState("#0f172a");
   const [showLogo, setShowLogo] = useState(true);
   const [logoSize, setLogoSize] = useState(0.3);
+  const [logoMargin, setLogoMargin] = useState(0);
+  const [useGradient, setUseGradient] = useState(false);
+  const [gradientFrom, setGradientFrom] = useState("#0ea5e9");
+  const [gradientTo, setGradientTo] = useState("#db2777");
+  const [gradientRotation, setGradientRotation] = useState(45);
+  const [backgroundRound, setBackgroundRound] = useState(0);
 
-  const downloadSvg = () => {
-    if (!qrRef.current) return;
-    const data = new XMLSerializer().serializeToString(qrRef.current);
-    const blob = new Blob([data], { type: "image/svg+xml;charset=utf-8" });
-    triggerDownload(URL.createObjectURL(blob), "qr-code.svg");
-  };
+  const foregroundGradient = useGradient
+    ? {
+        type: "linear" as const,
+        rotation: gradientRotation,
+        colorStops: [
+          { offset: 0, color: gradientFrom },
+          { offset: 1, color: gradientTo },
+        ],
+      }
+    : null;
 
-  const downloadPng = () => {
+  // downloadQR serializes the rendered <svg> — logo children included — and
+  // rasterizes it for png/jpeg/webp.
+  const download = (format: "svg" | "png") => {
     if (!qrRef.current) return;
-    const data = new XMLSerializer().serializeToString(qrRef.current);
-    const svgUrl =
-      "data:image/svg+xml;charset=utf-8," + encodeURIComponent(data);
-    const img = new Image();
-    img.onload = () => {
-      const scale = 4;
-      const canvas = document.createElement("canvas");
-      canvas.width = size * scale;
-      canvas.height = size * scale;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      triggerDownload(canvas.toDataURL("image/png"), "qr-code.png");
-    };
-    img.src = svgUrl;
+    downloadQR(qrRef.current, {
+      format,
+      name: "qr-code",
+      size: size * 4,
+    });
   };
 
   return (
@@ -160,7 +146,10 @@ const App = () => {
               margin={margin}
               errorCorrectionLevel={errorCorrectionLevel}
               foregroundColor={foregroundColor}
+              foregroundGradient={foregroundGradient}
               backgroundColor={backgroundColor}
+              backgroundRound={backgroundRound}
+              logoMargin={logoMargin}
               shape={shape}
               cornerBorderStyle={cornerBorderStyle}
               cornerCenterStyle={cornerCenterStyle}
@@ -330,6 +319,78 @@ const App = () => {
               <input
                 className="h-[18px] w-[18px] accent-sky-500"
                 type="checkbox"
+                checked={useGradient}
+                onChange={(e) => setUseGradient(e.target.checked)}
+              />
+              <span>Foreground gradient</span>
+            </label>
+
+            {useGradient && (
+              <>
+                <div className="flex gap-3.5">
+                  <label className={`${fieldLabel} flex-1`}>
+                    <span>Gradient from</span>
+                    <input
+                      className="h-10 w-full cursor-pointer rounded-lg border border-slate-700 bg-slate-800/60"
+                      type="color"
+                      value={gradientFrom}
+                      onChange={(e) => setGradientFrom(e.target.value)}
+                    />
+                  </label>
+                  <label className={`${fieldLabel} flex-1`}>
+                    <span>Gradient to</span>
+                    <input
+                      className="h-10 w-full cursor-pointer rounded-lg border border-slate-700 bg-slate-800/60"
+                      type="color"
+                      value={gradientTo}
+                      onChange={(e) => setGradientTo(e.target.value)}
+                    />
+                  </label>
+                </div>
+                <label className={fieldLabel}>
+                  <span>
+                    Gradient rotation{" "}
+                    <em className="font-normal text-slate-100 not-italic">
+                      {gradientRotation}°
+                    </em>
+                  </span>
+                  <input
+                    className="accent-sky-500"
+                    type="range"
+                    min={0}
+                    max={360}
+                    step={5}
+                    value={gradientRotation}
+                    onChange={(e) =>
+                      setGradientRotation(Number(e.target.value))
+                    }
+                  />
+                </label>
+              </>
+            )}
+
+            <label className={fieldLabel}>
+              <span>
+                Background roundness{" "}
+                <em className="font-normal text-slate-100 not-italic">
+                  {Math.round(backgroundRound * 100)}%
+                </em>
+              </span>
+              <input
+                className="accent-sky-500"
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={backgroundRound}
+                onChange={(e) => setBackgroundRound(Number(e.target.value))}
+              />
+            </label>
+
+            <label className="flex items-center gap-2.5 text-sm font-medium text-slate-100">
+              <input
+                className="h-[18px] w-[18px] accent-sky-500"
+                type="checkbox"
                 checked={showLogo}
                 onChange={(e) => setShowLogo(e.target.checked)}
               />
@@ -356,18 +417,38 @@ const App = () => {
               </label>
             )}
 
+            {showLogo && (
+              <label className={fieldLabel}>
+                <span>
+                  Logo margin{" "}
+                  <em className="font-normal text-slate-100 not-italic">
+                    {logoMargin}px
+                  </em>
+                </span>
+                <input
+                  className="accent-sky-500"
+                  type="range"
+                  min={0}
+                  max={24}
+                  step={1}
+                  value={logoMargin}
+                  onChange={(e) => setLogoMargin(Number(e.target.value))}
+                />
+              </label>
+            )}
+
             <div className="flex gap-3.5">
               <button
                 type="button"
                 className="flex-1 cursor-pointer rounded-lg bg-sky-500 px-4 py-3 font-semibold text-slate-950 transition hover:-translate-y-0.5 hover:bg-sky-400"
-                onClick={downloadSvg}
+                onClick={() => download("svg")}
               >
                 Download SVG
               </button>
               <button
                 type="button"
                 className="flex-1 cursor-pointer rounded-lg border border-slate-700 px-4 py-3 font-semibold text-slate-100 transition hover:-translate-y-0.5 hover:border-sky-400 hover:bg-slate-800/60"
-                onClick={downloadPng}
+                onClick={() => download("png")}
               >
                 Download PNG
               </button>
@@ -382,12 +463,5 @@ const App = () => {
     </div>
   );
 };
-
-function triggerDownload(href: string, filename: string) {
-  const a = document.createElement("a");
-  a.href = href;
-  a.download = filename;
-  a.click();
-}
 
 export default App;

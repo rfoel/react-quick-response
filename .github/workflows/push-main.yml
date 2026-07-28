@@ -15,12 +15,16 @@ jobs:
       id-token: write # npm trusted publishing (OIDC)
     steps:
       - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 22
+          cache: pnpm
       - run: npm install -g npm@latest # OIDC publishing requires npm >= 11.5.1
-      - run: npm install
-      - run: npm run build
-      - run: npx semantic-release
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      # Publishes quick-response-core first, then react-quick-response, both
+      # bumped to the same version by semantic-release.
+      - run: pnpm dlx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

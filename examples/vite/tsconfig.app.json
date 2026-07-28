@@ -15,6 +15,12 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Resolve the packages to their workspace sources (see vite.config.ts) */
+    "paths": {
+      "react-quick-response": ["../../packages/react/src"],
+      "quick-response-core": ["../../packages/core/src"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

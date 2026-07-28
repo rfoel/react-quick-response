@@ -1,0 +1,72 @@
+{
+  "name": "react-quick-response",
+  "version": "1.2.0",
+  "description": "Lightweight React QR code component — generate customizable QR codes as SVG with a centered logo overlay, dot/rounded module shapes, and zero runtime dependencies beyond quick-response-core.",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rfoel/react-quick-response.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://react-quick-response.rfoel.dev",
+  "main": "./dist/react-quick-response.umd.cjs",
+  "module": "./dist/react-quick-response.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/react-quick-response.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/react-quick-response.umd.cjs"
+      }
+    }
+  },
+  "keywords": [
+    "qr-code",
+    "qrcode",
+    "qr",
+    "react",
+    "react-qr-code",
+    "qrcode-react",
+    "qr-generator",
+    "qr-code-generator",
+    "qr-code-with-logo",
+    "qr-logo",
+    "rounded-qr",
+    "generator",
+    "svg",
+    "png",
+    "typescript",
+    "ssr",
+    "no-dependencies"
+  ],
+  "author": "Rafael Franco",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "prepublishOnly": "pnpm run build"
+  },
+  "dependencies": {
+    "quick-response-core": "^1.2.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "react": "^19.2.7",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16",
+    "vite-plugin-dts": "^5.0.2",
+    "react-dom": "^19.2.7"
+  }
+}

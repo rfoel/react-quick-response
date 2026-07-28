@@ -5,10 +5,30 @@
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    "@semantic-release/npm",
+    [
+      "@semantic-release/npm",
+      {
+        "pkgRoot": "packages/core"
+      }
+    ],
+    [
+      "@semantic-release/npm",
+      {
+        "pkgRoot": "packages/react"
+      }
+    ],
     "@semantic-release/github",
     "@semantic-release/changelog",
-    "@semantic-release/git"
+    [
+      "@semantic-release/git",
+      {
+        "assets": [
+          "CHANGELOG.md",
+          "packages/core/package.json",
+          "packages/react/package.json"
+        ]
+      }
+    ]
   ],
   "preset": "angular"
 }

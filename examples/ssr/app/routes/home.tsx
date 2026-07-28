@@ -8,7 +8,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 import { useRef } from "react";
-import { ReactQR } from "../../../../src/ReactQR";
+import { ReactQR } from "react-quick-response";
 import ReactLogo from "../assets/react.svg?react";
 import ViteLogo from "../assets/vite.png?inline";
 

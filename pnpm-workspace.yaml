@@ -1,0 +1,11 @@
+packages:
+  - packages/*
+  - examples/*
+
+allowBuilds:
+  esbuild: true
+
+# Resolve `quick-response-core` in packages/react to the local workspace copy
+# even though it is declared with a plain semver range (semantic-release
+# publishes with npm, which does not understand the `workspace:` protocol).
+linkWorkspacePackages: true

@@ -1,0 +1,59 @@
+{
+  "name": "quick-response-core",
+  "version": "1.2.0",
+  "description": "Framework-agnostic QR code generator — pure functions that return SVG paths (or a full SVG string) with customizable module shapes, styled finder patterns and a logo knockout. Zero dependencies.",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rfoel/react-quick-response.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://react-quick-response.rfoel.dev",
+  "main": "./dist/quick-response-core.umd.cjs",
+  "module": "./dist/quick-response-core.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/quick-response-core.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/quick-response-core.umd.cjs"
+      }
+    }
+  },
+  "keywords": [
+    "qr-code",
+    "qrcode",
+    "qr",
+    "qr-generator",
+    "qr-code-generator",
+    "qr-code-styling",
+    "qr-code-with-logo",
+    "qr-logo",
+    "rounded-qr",
+    "svg",
+    "svg-path",
+    "typescript",
+    "ssr",
+    "vanilla-js",
+    "no-dependencies"
+  ],
+  "author": "Rafael Franco",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b && vite build",
+    "prepublishOnly": "pnpm run build"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16",
+    "vite-plugin-dts": "^5.0.2"
+  }
+}

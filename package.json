@@ -1,77 +1,31 @@
 {
-  "name": "react-quick-response",
-  "version": "1.3.0",
-  "description": "Lightweight React QR code component — generate customizable QR codes as SVG with a centered logo overlay, dot/rounded module shapes, and zero dependencies.",
+  "name": "quick-response-monorepo",
+  "private": true,
   "type": "module",
-  "files": [
-    "dist"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rfoel/react-quick-response.git"
   },
   "homepage": "https://react-quick-response.rfoel.dev",
-  "main": "./dist/react-quick-response.umd.cjs",
-  "module": "./dist/react-quick-response.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/react-quick-response.js"
-      },
-      "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/react-quick-response.umd.cjs"
-      }
-    }
-  },
-  "keywords": [
-    "qr-code",
-    "qrcode",
-    "qr",
-    "react",
-    "react-qr-code",
-    "qrcode-react",
-    "qr-generator",
-    "qr-code-generator",
-    "qr-code-with-logo",
-    "qr-logo",
-    "rounded-qr",
-    "generator",
-    "svg",
-    "png",
-    "typescript",
-    "ssr",
-    "no-dependencies"
-  ],
   "author": "Rafael Franco",
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "prepublishOnly": "npm run build"
-  },
-  "peerDependencies": {
-    "react": ">=16.8.0"
+    "build": "pnpm --filter \"./packages/*\" build",
+    "dev": "pnpm --filter example dev",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@types/node": "^25.9.1",
-    "@types/react": "^19.2.16",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^10.4.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "semantic-release": "^25.0.3",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.60.1",
-    "vite": "^8.0.16",
-    "vite-plugin-dts": "^5.0.2"
-  }
+    "typescript-eslint": "^8.60.1"
+  },
+  "packageManager": "pnpm@11.8.0"
 }

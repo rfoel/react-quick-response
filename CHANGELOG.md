@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/rfoel/react-quick-response/compare/v1.4.0...v1.5.0) (2026-07-28)
+
+
+### Features
+
+* add circular frame ([927997b](https://github.com/rfoel/react-quick-response/commit/927997bb39fdaf7eeda866bffd639199db40e8d3))
+
 # [1.4.0](https://github.com/rfoel/react-quick-response/compare/v1.3.0...v1.4.0) (2026-07-28)
 
 

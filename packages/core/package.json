@@ -1,6 +1,6 @@
 {
   "name": "quick-response-core",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Framework-agnostic QR code generator — pure functions that return SVG paths (or a full SVG string) with customizable module shapes, styled finder patterns and a logo knockout. Zero dependencies.",
   "type": "module",
   "sideEffects": false,

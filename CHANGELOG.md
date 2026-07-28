@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/rfoel/react-quick-response/compare/v1.5.0...v1.5.1) (2026-07-28)
+
+
+### Bug Fixes
+
+* **docs:** reword shipped docs and types without third-party comparisons ([2e7cc8f](https://github.com/rfoel/react-quick-response/commit/2e7cc8fa63529c6a59607a9ab1e01b60e05de0d6))
+
 # [1.5.0](https://github.com/rfoel/react-quick-response/compare/v1.4.0...v1.5.0) (2026-07-28)
 
 
